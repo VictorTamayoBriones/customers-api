@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCustomers } from '../services/customer.service';
+import { getCustomerById, getCustomers } from '../services/customer.service';
 
 const router = express.Router();
 
@@ -13,8 +13,19 @@ router.get('/', async(_req, res)=>{
         })
 });
 
-router.get('/:id', (_req, res)=>{
-    res.send('one customer');
+router.get('/:id', async(req, res)=>{
+
+    const { id } = req.params;
+
+    if(id != ''){
+        const customer = await getCustomerById(id);
+        res.json(customer);
+    }else{
+        res.status(404).json({message: 'Customer not found'});
+    }
+
 });
+
+
 
 export default router;
