@@ -1,4 +1,4 @@
-interface CustomerBaseModel {
+export interface ICustomer {
     id: string,
     full_name: string,
     nss: string,
@@ -6,4 +6,6 @@ interface CustomerBaseModel {
     phone: number,
     address: string,
     contrac: string
-};
+}
+
+export type requestCustomer = Omit<ICustomer, 'id'>

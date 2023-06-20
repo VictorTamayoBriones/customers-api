@@ -18,3 +18,12 @@ export const getCustomerById = async (id: string) =>{
         return {message: 'Something goes wrong'}
     }
 }
+
+export const updateCustomerById = async (id: string) =>{
+    try{
+        const [customers] = await pool.query("SELECT * FROM customers WHERE id = ?", [id]);
+        return customers;
+    }catch(err){
+        return {message: 'Something goes wrong'}
+    }
+}
