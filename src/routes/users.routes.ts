@@ -13,7 +13,7 @@ router.post('/auth', async(req, res) =>{
     await authuser(bodyParamsCleaned)
         .then(response => {
             if(!response[0]){
-                res.status(422).json({message: 'Email not valid'});
+                res.status(422).json({message: 'Email or password are not valid'});
             }else{
                 res.json(response);
             }
