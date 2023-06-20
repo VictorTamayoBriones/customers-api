@@ -6,10 +6,20 @@ import { v4 as UUID } from 'uuid';
 
 export const getCustomers = async () => {
     try{
-        const [customers] = await pool.query("SELECT * FROM customers");
+        const [customers] = await pool.query("SELECT * FROM customers WHERE is_deleted = 0");
         const [versions] = await pool.query("SELECT * FROM versions");
         const data = unionVersions(customers, versions);
         return data;
+    }catch(err){
+        return {message: 'Something goes wrong'};
+    }
+}
+
+export const getDeletedCustomers = async () => {
+    try{
+        const [customers] = await pool.query("SELECT * FROM customers WHERE is_deleted = 1");
+        console.log(customers)
+        return customers;
     }catch(err){
         return {message: 'Something goes wrong'};
     }

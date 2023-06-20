@@ -1,9 +1,15 @@
 import express from 'express'
-import { getCustomerById, getCustomers, updateCustomerById } from '../services/customer.service';
+import { getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
 const router = express.Router();
+router.get('/deleted', async(_req, res)=>{
+    console.log('sdksdhkfjdshkf')
+    const customer = await getDeletedCustomers();
+    res.json(customer);
+
+});
 
 router.get('/', async(_req, res)=>{
     await getCustomers()
@@ -27,6 +33,7 @@ router.get('/:id', async(req, res)=>{
     }
 
 });
+
 
 router.patch('/:id', async(req, res)=>{
     const { id } = req.params;
