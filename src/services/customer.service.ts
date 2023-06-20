@@ -18,7 +18,9 @@ export const getCustomers = async () => {
 export const getCustomerById = async (id: string) =>{
     try{
         const [customers]:any = await pool.query("SELECT * FROM customers WHERE id = ?", [id]);
-        return customers[0];
+        const [versions] = await pool.query("SELECT * FROM versions WHERE id_customer = ?", [id]);
+        const data = unionVersions(customers, versions);
+        return data;
     }catch(err){
         return {message: 'Something goes wrong'}
     }
