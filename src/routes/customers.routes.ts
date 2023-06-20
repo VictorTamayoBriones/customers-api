@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
+import { deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
@@ -44,12 +44,22 @@ router.patch('/:id', async(req, res)=>{
         
         const bodyParamsCleaned = cleanBodyRequest(paramsExpected, bodyParams);
         await updateCustomerById(id, bodyParamsCleaned)
-            .then(result=>{
-                console.log(result)
+            .then( ()=> {
                 res.send('update successfully');
             })
             .catch(err => res.json(err));
         
+    }else{
+        res.status(404).json({message: 'Customer not found'});
+    }
+})
+
+router.delete('/:id', async(req, res)=>{
+    const { id } = req.params;
+
+    if(id != ''){
+        await deleteCustomerById(id);
+        res.json({message: 'Deleted successfully'});
     }else{
         res.status(404).json({message: 'Customer not found'});
     }

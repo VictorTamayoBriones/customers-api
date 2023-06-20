@@ -18,7 +18,7 @@ export const getCustomers = async () => {
 export const getDeletedCustomers = async () => {
     try{
         const [customers] = await pool.query("SELECT * FROM customers WHERE is_deleted = 1");
-        console.log(customers)
+        
         return customers;
     }catch(err){
         return {message: 'Something goes wrong'};
@@ -50,4 +50,21 @@ export const updateCustomerById = async (id: string, params:any) =>{
     }catch(err){
         return {message: 'Something goes wrong'}
     }
+}
+
+export const deleteCustomerById = async(id: string)=>{
+    try{
+        const [rows]:any = await pool.query("UPDATE customers SET is_deleted = 1  WHERE id = ?", [id]);
+    
+        if(rows[0].affectedRows > 0){
+            
+            return {message:"Deleted Succesfully"}
+        }else{
+            return {message:"Customer not found"}
+        }
+    
+    }catch(err){
+        return {message: 'Something goes wrong'}
+    }
+
 }
