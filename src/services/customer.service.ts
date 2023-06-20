@@ -52,6 +52,20 @@ export const updateCustomerById = async (id: string, params:any) =>{
     }
 }
 
+export const createCustomer = async(params:any) =>{
+    try{
+        const [customers]:any = await pool.query("INSERT INTO customers(id, full_name, nss, rfc, phone, address, is_deleted) VALUES (?,?,?,?,?,?,?)", [UUID(), params.full_name, params.nss, params.rfc, params.phone, params.address, 0]);
+        console.log(params)
+        if(customers[0].affectedRows > 0){
+            return({message: "Updated successfully"});
+        }
+
+        return customers;
+    }catch(err){
+        return {message: 'Something goes wrong'}
+    }
+}
+
 export const deleteCustomerById = async(id: string)=>{
     try{
         const [rows]:any = await pool.query("UPDATE customers SET is_deleted = 1  WHERE id = ?", [id]);

@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
+import { createCustomer, deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
@@ -45,13 +45,24 @@ router.patch('/:id', async(req, res)=>{
         const bodyParamsCleaned = cleanBodyRequest(paramsExpected, bodyParams);
         await updateCustomerById(id, bodyParamsCleaned)
             .then( ()=> {
-                res.send('update successfully');
+                res.send('updated successfully');
             })
             .catch(err => res.json(err));
         
     }else{
         res.status(404).json({message: 'Customer not found'});
     }
+})
+
+router.post('/', async(req, res) =>{
+    const bodyParams = req.body;
+    const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0, address: '', contrac: ''};
+    const bodyParamsCleaned = cleanBodyRequest(paramsExpected, bodyParams);
+    await createCustomer(bodyParamsCleaned)
+        .then( ()=> {
+            res.send('created successfully');
+        })
+        .catch(err => res.json(err)); 
 })
 
 router.delete('/:id', async(req, res)=>{
