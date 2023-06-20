@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  mysql-8.0.31:
+    image: docker.io/mysql:8.0.31
+    restart: always
+    ports:
+      - "33060:3306"
+    environment:
+      TZ: America/Mexico_City
+      MYSQL_ROOT_PASSWORD: fj1Ru4dit4%.%_34
+      MYSQL_USER: victor
+      MYSQL_PASSWORD: QtQ8Zm59!F&wK
+      MYSQL_DATABASE: customerdb
+
+    volumes:
+      - mysql-8.0.31-data:/var/lib/mysql
+
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  phpmyadmin-5.2.1:
+
+    image: docker.io/phpmyadmin:5.2.1
+    restart: always
+
+    ports:
+      - 33061:80
+
+    environment:
+      - PMA_HOST=mysql-8.0.31
+      - UPLOAD_LIMIT=200M
+
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+    depends_on:
+      - mysql-8.0.31
+
+
+volumes:
+  mysql-8.0.31-data: {}
+
+networks:
+  default:
+    driver: bridge
