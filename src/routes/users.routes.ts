@@ -14,8 +14,9 @@ router.post('/auth', async(req, res) =>{
         .then(response => {
             if(!response[0]){
                 res.status(422).json({message: 'Email not valid'});
+            }else{
+                res.json(response);
             }
-            res.send(response)
         })
         .catch(err => res.status(500).json(err))
 });
