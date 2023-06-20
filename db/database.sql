@@ -29,3 +29,12 @@ CREATE TABLE IF NOT EXISTS versions(
     address VARCHAR(100) NOT NULL,
     PRIMARY KEY(id)
 )
+
+CREATE TABLE IF NOT EXISTS users(
+    id VARCHAR(50) NOT NULL,
+    user VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    PRIMARY KEY(id)
+)
+
+INSERT INTO users(id, user, password) VALUES ('93f87714-7e51-424d-a81e-8893dc12d9f6', 's2credit', 'b413cd3636e99ca8e50aed92d52e0e31');
