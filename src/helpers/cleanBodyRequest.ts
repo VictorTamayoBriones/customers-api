@@ -15,7 +15,6 @@ export const cleanBodyRequest = (bodyExpected: any, bodyRequest: any) => {
     let newObject = {}
     
     arrOfEntries.forEach((entry:any) => {
-        console.log(`ENTRY: ${entry}`)
         newObject = {...newObject, ...entry}
     })
 

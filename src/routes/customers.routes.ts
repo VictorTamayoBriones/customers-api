@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCustomerById, getCustomers } from '../services/customer.service';
+import { getCustomerById, getCustomers, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
@@ -36,9 +36,13 @@ router.patch('/:id', async(req, res)=>{
     if(id != ''){
         
         const bodyParamsCleaned = cleanBodyRequest(paramsExpected, bodyParams);
+        await updateCustomerById(id, bodyParamsCleaned)
+            .then(result=>{
+                console.log(result)
+                res.send('update successfully');
+            })
+            .catch(err => res.json(err));
         
-        console.log(bodyParamsCleaned)
-        res.send('update successfully');
     }else{
         res.status(404).json({message: 'Customer not found'});
     }
