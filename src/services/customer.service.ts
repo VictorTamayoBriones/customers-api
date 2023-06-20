@@ -40,10 +40,10 @@ export const updateCustomerById = async (id: string, params:any) =>{
     
     try{
         const tempData: ICustomer = await getCustomerById(id);
-        const result:any = await pool.query("UPDATE customers SET full_name = IFNULL(?, full_name), nss = IFNULL(?, nss), rfc = IFNULL(?, rfc), phone = IFNULL(?, phone), address = IFNULL(?, address) WHERE id = ?", [params.full_name, params.nss, params.rfc, params.phone, params.address, id]);
+        const result:any = await pool.query("UPDATE customers SET full_name = IFNULL(?, full_name), nss = IFNULL(?, nss), rfc = IFNULL(?, rfc), phone = IFNULL(?, phone) WHERE id = ?", [params.full_name, params.nss, params.rfc, params.phone, id]);
         
         if(result[0].affectedRows > 0){
-            await pool.query("INSERT INTO versions(id, id_customer, full_name, nss, rfc, phone, address) VALUES (?,?,?,?,?,?,?)", [UUID(), id, tempData.full_name, tempData.nss, tempData.rfc, tempData.phone, tempData.address]);
+            await pool.query("INSERT INTO versions(id, id_customer, full_name, nss, rfc, phone) VALUES (?,?,?,?,?,?,?)", [UUID(), id, tempData.full_name, tempData.nss, tempData.rfc, tempData.phone]);
         }
 
         return result;
@@ -54,14 +54,16 @@ export const updateCustomerById = async (id: string, params:any) =>{
 
 export const createCustomer = async(params:any) =>{
     try{
-        const [customers]:any = await pool.query("INSERT INTO customers(id, full_name, nss, rfc, phone, address, is_deleted) VALUES (?,?,?,?,?,?,?)", [UUID(), params.full_name, params.nss, params.rfc, params.phone, params.address, 0]);
-        console.log(params)
-        if(customers[0].affectedRows > 0){
+        const [customers]:any = await pool.query("INSERT INTO customers(id, full_name, nss, rfc, phone, is_deleted) VALUES (?,?,?,?,?,?)", [UUID(), params.full_name, params.nss, params.rfc, params.phone, 0]);
+        
+        if(customers['affectedRows'] > 0){
             return({message: "Updated successfully"});
+        }else{
+            return({message: "Customer not created"});
         }
 
-        return customers;
     }catch(err){
+        console.log(err)
         return {message: 'Something goes wrong'}
     }
 }

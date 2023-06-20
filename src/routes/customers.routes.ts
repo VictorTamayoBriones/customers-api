@@ -38,7 +38,7 @@ router.get('/:id', async(req, res)=>{
 router.patch('/:id', async(req, res)=>{
     const { id } = req.params;
     const bodyParams = req.body;
-    const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0, address: '', contrac: ''};
+    const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0};
 
     if(id != ''){
         
@@ -56,11 +56,13 @@ router.patch('/:id', async(req, res)=>{
 
 router.post('/', async(req, res) =>{
     const bodyParams = req.body;
-    const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0, address: '', contrac: ''};
+    const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0};
     const bodyParamsCleaned = cleanBodyRequest(paramsExpected, bodyParams);
     await createCustomer(bodyParamsCleaned)
-        .then( ()=> {
-            res.send('created successfully');
+        .then( (response)=> {
+            if(response.message){
+                res.json(response)
+            }
         })
         .catch(err => res.json(err)); 
 })

@@ -3,9 +3,7 @@ export interface ICustomer {
     full_name: string,
     nss: string,
     rfc: string,
-    phone: number,
-    address: string,
-    contrac: string
+    phone: number
 }
 
 export type IVersions = {
@@ -15,7 +13,6 @@ export type IVersions = {
     nss: string,
     rfc: string,
     phone: number,
-    address: string,
     contrac: string
 }
 
