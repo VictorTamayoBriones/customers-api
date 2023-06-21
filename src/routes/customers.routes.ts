@@ -1,5 +1,5 @@
 import express from 'express'
-import { createCustomer, deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, updateCustomerById } from '../services/customer.service';
+import { createCustomer, deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, resetVersion, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
@@ -54,6 +54,15 @@ router.patch('/:id', async(req, res)=>{
     }
 })
 
+router.post('/version/:id', async(req, res) =>{
+    const { id } = req.params;
+    await resetVersion(id)
+        .then(response =>{
+            res.json(response)
+        })
+        .catch(err=>res.status(500).json(err))
+})
+
 router.post('/', async(req, res) =>{
     const bodyParams = req.body;
     const paramsExpected: requestCustomer = { full_name: '', nss: '', rfc: '', phone: 0};
@@ -66,6 +75,7 @@ router.post('/', async(req, res) =>{
         })
         .catch(err => res.json(err)); 
 })
+
 
 router.delete('/:id', async(req, res)=>{
     const { id } = req.params;

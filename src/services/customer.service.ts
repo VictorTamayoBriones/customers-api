@@ -39,13 +39,17 @@ export const getCustomerById = async (id: string) =>{
 export const updateCustomerById = async (id: string, params:any) =>{
     
     try{
-        const tempData: ICustomer = await getCustomerById(id);
+        const tempData: ICustomer[] = await getCustomerById(id);
         const result:any = await pool.query("UPDATE customers SET full_name = IFNULL(?, full_name), nss = IFNULL(?, nss), rfc = IFNULL(?, rfc), phone = IFNULL(?, phone) WHERE id = ?", [params.full_name, params.nss, params.rfc, params.phone, id]);
         
-        if(result[0].affectedRows > 0){
-            await pool.query("INSERT INTO versions(id, id_customer, full_name, nss, rfc, phone) VALUES (?,?,?,?,?,?,?)", [UUID(), id, tempData.full_name, tempData.nss, tempData.rfc, tempData.phone]);
+        if(result[0]['affectedRows'] > 0){
+            console.log(tempData);
+            await pool.query("INSERT INTO versions(id, id_customer, full_name, nss, rfc, phone) VALUES (?,?,?,?,?,?)", [UUID(), id, tempData[0]["full_name"], tempData[0]["nss"], tempData[0]["rfc"], tempData[0]["phone"]])
+                .then(res => console.log(res))
+                .catch(err => console.log(err))
+        
         }
-
+        
         return result;
     }catch(err){
         return {message: 'Something goes wrong'}
@@ -71,8 +75,8 @@ export const createCustomer = async(params:any) =>{
 export const deleteCustomerById = async(id: string)=>{
     try{
         const [rows]:any = await pool.query("UPDATE customers SET is_deleted = 1  WHERE id = ?", [id]);
-    
-        if(rows[0].affectedRows > 0){
+        
+        if(rows['affectedRows'] > 0){
             
             return {message:"Deleted Succesfully"}
         }else{
@@ -83,4 +87,25 @@ export const deleteCustomerById = async(id: string)=>{
         return {message: 'Something goes wrong'}
     }
 
+}
+
+export const resetVersion = async(id: string)=>{
+    try{
+        const [rows]:any = await pool.query("SELECT * FROM versions WHERE id = ?", [id]);
+        const customer_id = rows[0]["id_customer"];
+        if(customer_id){
+            const [customers]:any = await pool.query("UPDATE customers SET full_name=?, nss=?, rfc=?, phone=?  WHERE id = ?", [rows[0]["full_name"], rows[0]["nss"], rows[0]["rfc"], rows[0]["phone"], customer_id])
+                .then((_res) => {
+                    return {message: 'Reset version successfully'};
+                })
+                .catch((_err) => {
+                    return{message: `Something goes wrong`}
+                });
+            if(customers){
+                return customers
+            }
+        }
+    }catch(err){
+        return {message: 'Something goes wrong'}
+    }
 }
