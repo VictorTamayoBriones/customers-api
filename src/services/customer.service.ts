@@ -109,3 +109,28 @@ export const resetVersion = async(id: string)=>{
         return {message: 'Something goes wrong'}
     }
 }
+
+export const takeOutTrash = async(id: string)=>{
+    try{
+        const [rows]:any = await pool.query("SELECT * FROM customers WHERE id = ?", [id]);
+       
+        const customer_id = rows[0]["id"];
+        
+        if(customer_id){
+            const [customers]:any = await pool.query("UPDATE customers SET is_deleted = 0  WHERE id = ?", [customer_id])
+                .then((res) => {
+                    console.log(res)
+                    return {message: 'Take out trash successfully'};
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return{message: `Something goes wrong`}
+                });
+            if(customers){
+                return customers
+            }
+        }
+    }catch(err){
+        return {message: 'Something goes wrong'}
+    }
+}

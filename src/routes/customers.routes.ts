@@ -1,14 +1,13 @@
 import express from 'express'
-import { createCustomer, deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, resetVersion, updateCustomerById } from '../services/customer.service';
+import { createCustomer, deleteCustomerById, getCustomerById, getCustomers, getDeletedCustomers, resetVersion, takeOutTrash, updateCustomerById } from '../services/customer.service';
 import { cleanBodyRequest } from '../helpers/cleanBodyRequest';
 import { requestCustomer } from '../models/customer.models';
 
 const router = express.Router();
+
 router.get('/deleted', async(_req, res)=>{
-    console.log('sdksdhkfjdshkf')
     const customer = await getDeletedCustomers();
     res.json(customer);
-
 });
 
 router.get('/', async(_req, res)=>{
@@ -57,6 +56,15 @@ router.patch('/:id', async(req, res)=>{
 router.post('/version/:id', async(req, res) =>{
     const { id } = req.params;
     await resetVersion(id)
+        .then(response =>{
+            res.json(response)
+        })
+        .catch(err=>res.status(500).json(err))
+})
+
+router.post('/deleted/:id', async(req, res) =>{
+    const { id } = req.params;
+    await takeOutTrash(id)
         .then(response =>{
             res.json(response)
         })
